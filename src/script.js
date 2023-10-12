@@ -7,6 +7,10 @@ import waterFragmentShader from './shaders/water/fragment.glsl'
 
 THREE.ColorManagement.enabled = false
 
+// add fog to hide the edges!
+// use distance from camera to do it
+// send this value from vertex to fragment 
+
 /**
  * Base
  */
@@ -24,7 +28,7 @@ const scene = new THREE.Scene()
  * Water
  */
 // Geometry
-const waterGeometry = new THREE.PlaneGeometry(2, 2, 128, 128)
+const waterGeometry = new THREE.PlaneGeometry(2, 2, 512, 512)
 
 // Color
 debugObject.depthColor = '#186691'
@@ -40,6 +44,11 @@ const waterMaterial = new THREE.ShaderMaterial({
         uBigWavesSpeed: { value: 0.75 },
         uBigWavesElevation: { value: 0.2 },
         uBigWavesFrequency: { value: new THREE.Vector2(4, 1.5) },
+
+        uSmallWavesElevation: { value: 0.15 },
+        uSmallWavesFrequency: { value: 3 },
+        uSmallWavesSpeed: { value: 0.2 },
+        uSmallWavesIterations: { value: 4 },
 
         uDepthColor: { value: new THREE.Color(debugObject.depthColor)},
         uSurfaceColor: { value: new THREE.Color(debugObject.surfaceColor) },
@@ -57,18 +66,39 @@ gui.add(waterMaterial.uniforms.uBigWavesElevation, 'value')
     .max(1)
     .step(0.001)
     .name('uBigWavesElevation')
-
 gui.add(waterMaterial.uniforms.uBigWavesFrequency.value, 'x')
     .min(0)
     .max(10)
     .step(0.1)
     .name('uBigWavesFrequency X')
-
 gui.add(waterMaterial.uniforms.uBigWavesFrequency.value, 'y')
     .min(0)
     .max(10)
     .step(0.1)
     .name('uBigWavesFrequency Z')
+
+
+gui.add(waterMaterial.uniforms.uSmallWavesSpeed, 'value')
+    .min(0)
+    .max(2)
+    .step(0.001)
+    .name('uSmallWavesSpeed')
+gui.add(waterMaterial.uniforms.uSmallWavesElevation, 'value')
+    .min(0)
+    .max(0.5)
+    .step(0.001)
+    .name('uSmallWavesElevation')
+gui.add(waterMaterial.uniforms.uSmallWavesFrequency, 'value')
+    .min(0)
+    .max(30)
+    .step(0.001)
+    .name('uSmallWavesFrequency')
+gui.add(waterMaterial.uniforms.uSmallWavesIterations, 'value')
+    .min(0)
+    .max(8)
+    .step(1)
+    .name('uSmallWavesIterations')
+
 gui.addColor(debugObject, 'depthColor').onChange(() => {
     waterMaterial.uniforms.uDepthColor.value.set(debugObject.depthColor)
 })
@@ -85,6 +115,7 @@ gui.add(waterMaterial.uniforms.uColorMultiplier, 'value')
     .max(10)
     .step(0.1)
     .name('colorMultiplier')
+
 // Mesh
 const water = new THREE.Mesh(waterGeometry, waterMaterial)
 water.rotation.x = - Math.PI * 0.5
