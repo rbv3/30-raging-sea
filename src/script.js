@@ -47,8 +47,8 @@ const waterMaterial = new THREE.ShaderMaterial({
 
         uSmallWavesElevation: { value: 0.15 },
         uSmallWavesFrequency: { value: 3 },
-        uSmallWavesSpeed: { value: 0.2 },
-        uSmallWavesIterations: { value: 4 },
+        uSmallWavesSpeed: { value: 0.5 },
+        uSmallWavesIterations: { value: 3 },
 
         uDepthColor: { value: new THREE.Color(debugObject.depthColor)},
         uSurfaceColor: { value: new THREE.Color(debugObject.surfaceColor) },
@@ -107,8 +107,8 @@ gui.addColor(debugObject, 'surfaceColor').onChange(() => {
 })
 gui.add(waterMaterial.uniforms.uColorOffset, 'value')
     .min(0)
-    .max(2)
-    .step(0.1)
+    .max(0.5)
+    .step(0.01)
     .name('colorOffset')
 gui.add(waterMaterial.uniforms.uColorMultiplier, 'value')
     .min(0)
